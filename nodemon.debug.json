@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["src/**/*.test.ts"],
+  "exec": "TS_NODE_FILES=true node --inspect=127.0.0.1:9239 -r ts-node/register src/main.ts"
+}

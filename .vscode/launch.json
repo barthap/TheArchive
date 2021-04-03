@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-node",
+      // "type": "node",
+      "request": "launch",
+      "name": "Launch Debugger",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:debug"],
+      // "port": 9239,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    }
+  ]
+}

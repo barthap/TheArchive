@@ -1,0 +1,38 @@
+{
+  "name": "the-archive",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Bartłomiej Klocek <barthap10@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "direnv exec .direnv/local yarn run nodemon | bunyan -o short -l debug --color",
+    "start:debug": "direnv exec .direnv/local yarn run nodemon --config nodemon.debug.json | bunyan -o short -l debug --color",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist",
+    "clean-all": "yarn clean && rm -rf node_modules",
+    "compile": "tsc -p tsconfig.build.json",
+    "test:unit": "jest --config jest.config.unit.js",
+    "test:unit:watch": "jest --config jest.config.unit.js --watch",
+    "test:integration": "jest --runInBand --config jest.config.integration.js",
+    "test:integration:watch": "jest --runInBand --config jest.config.integration.js --watchAll"
+  },
+  "dependencies": {
+    "knex": "^0.95.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.37",
+    "bunyan": "^1.8.15",
+    "eslint": "^7.23.0",
+    "eslint-config-universe": "^7.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.3.3",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
