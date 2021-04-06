@@ -1,4 +1,16 @@
-const what: string = 'world';
-const verb = process.env.MY_ENV;
+import initAsync from './app';
+import config from './config';
 
-console.log(`${verb} ${what}`);
+async function main(): Promise<void> {
+  try {
+    const server = await initAsync();
+    server.listen(config.port);
+    console.log(`HTTP server is listening on ${config.port}`);
+  } catch (e) {
+    console.log('Error running server!');
+    console.error(e);
+    process.exit(1);
+  }
+}
+
+void main();

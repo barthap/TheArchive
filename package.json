@@ -18,10 +18,19 @@
     "test:integration:watch": "jest --runInBand --config jest.config.integration.js --watchAll"
   },
   "dependencies": {
-    "knex": "^0.95.4"
+    "apollo-server-koa": "^2.22.2",
+    "graphql": "^15.5.0",
+    "graphql-tools": "^7.0.4",
+    "knex": "^0.95.4",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.0.0",
+    "pg": "^8.5.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
+    "@types/koa": "^2.13.1",
+    "@types/koa-router": "^7.4.1",
     "@types/node": "^14.14.37",
     "bunyan": "^1.8.15",
     "eslint": "^7.23.0",
