@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-koa';
 
+import { IEntityClass } from '../../data/entity/ItemEntity';
 import PersonEntity from '../../data/entity/PersonEntity';
 
 export const itemTypeDef = gql`
@@ -12,9 +13,8 @@ export const itemTypeDef = gql`
 
 export const itemTypeResolver = {
   Item: {
-    __resolveType: (parent: any) => {
-      console.log('parent', parent);
-      return 'Person';
+    __resolveType: (parent: IEntityClass<any, any>) => {
+      return parent.__typename;
     },
   },
 };

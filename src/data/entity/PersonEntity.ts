@@ -1,6 +1,6 @@
-import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
+import { ID } from '../types';
 
-type ID = string;
+import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
 
 interface PersonFields extends ItemFields {
   fullName: string;
@@ -9,6 +9,8 @@ interface PersonFields extends ItemFields {
 }
 
 export default class PersonEntity extends ItemEntity<PersonFields> {
+  static readonly __typename = 'Person';
+
   static getEntityCompanion(): EntityCompanion<PersonFields> {
     return {
       tableName: 'people',

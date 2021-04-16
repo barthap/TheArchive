@@ -22,9 +22,12 @@ export type EntityCompanion<TFields> = {
 export interface IEntityClass<TFields extends ItemFields, TEntity extends ItemEntity<TFields>> {
   new (fields: Readonly<TFields>): TEntity;
   getEntityCompanion(): EntityCompanion<TFields>;
+  __typename: string;
 }
 
 export default abstract class ItemEntity<TFields extends ItemFields> {
+  static readonly __typename: string = 'Item';
+
   constructor(private readonly fields: TFields) {}
 
   static repository<TFields extends ItemFields, TEntity extends ItemEntity<TFields>>(
@@ -35,5 +38,19 @@ export default abstract class ItemEntity<TFields extends ItemFields> {
 
   getField<T extends keyof TFields>(field: T): TFields[T] {
     return this.fields[field];
+  }
+
+  getAllFields(): Readonly<TFields> {
+    return { ...this.fields };
+  }
+
+  getId(): ID {
+    return this.fields['id'];
+  }
+
+  getTypename<TFields extends ItemFields, TEntity extends ItemEntity<TFields>>(
+    this: IEntityClass<TFields, TEntity>
+  ): string {
+    return this.__typename;
   }
 }
