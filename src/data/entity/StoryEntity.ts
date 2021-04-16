@@ -9,7 +9,7 @@ interface StoryFields extends ItemFields {
 }
 
 export default class StoryEntity extends ItemEntity<StoryFields> {
-  static readonly __typename = 'Story';
+  protected readonly __typename = 'Story';
 
   static getEntityCompanion(): EntityCompanion<StoryFields> {
     return {

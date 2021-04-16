@@ -30,6 +30,11 @@ export default class ItemRepository<
     return results.map((r) => new this.entityClass(this.mapRowToFields(r)));
   }
 
+  async getMany(ids: ID[]): Promise<TEntity[]> {
+    const results = await client(this.entityCompanion.viewName).select().whereIn('id', ids);
+    return results.map((r) => new this.entityClass(this.mapRowToFields(r)));
+  }
+
   private mapRowToFields(row: Record<string, any>): TFields {
     const fields: Partial<TFields> = {};
     const rowMap = { ...itemDefaultRowMap, ...this.entityCompanion.rowMap };

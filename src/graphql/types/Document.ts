@@ -13,6 +13,9 @@ export const documentTypeDef = gql`
     type: String!
     filename: String
     content: String
+
+    relatedIn: [Item]!
+    relatesTo: [Item]!
   }
 `;
 

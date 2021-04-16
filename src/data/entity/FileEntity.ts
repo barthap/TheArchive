@@ -9,7 +9,7 @@ interface FileFields extends ItemFields {
 }
 
 export default class FileEntity extends ItemEntity<FileFields> {
-  static readonly __typename = 'File';
+  protected readonly __typename = 'File';
 
   static getEntityCompanion(): EntityCompanion<FileFields> {
     return {

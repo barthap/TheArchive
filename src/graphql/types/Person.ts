@@ -12,6 +12,9 @@ export const personTypeDef = gql`
     fullName: String!
     birthDate: DateTime
     description: String
+
+    relatedIn: [Item]!
+    relatesTo: [Item]!
   }
 `;
 

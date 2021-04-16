@@ -9,7 +9,7 @@ interface PhotoFields extends ItemFields {
 }
 
 export default class PhotoEntity extends ItemEntity<PhotoFields> {
-  static readonly __typename = 'Photo';
+  protected readonly __typename = 'Photo';
 
   static getEntityCompanion(): EntityCompanion<PhotoFields> {
     return {

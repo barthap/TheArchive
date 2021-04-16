@@ -12,6 +12,9 @@ export const storyTypeDef = gql`
     storyDateTime: DateTime!
     header: String
     content: String!
+
+    relatedIn: [Item]!
+    relatesTo: [Item]!
   }
 `;
 

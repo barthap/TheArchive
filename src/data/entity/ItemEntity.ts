@@ -22,11 +22,10 @@ export type EntityCompanion<TFields> = {
 export interface IEntityClass<TFields extends ItemFields, TEntity extends ItemEntity<TFields>> {
   new (fields: Readonly<TFields>): TEntity;
   getEntityCompanion(): EntityCompanion<TFields>;
-  __typename: string;
 }
 
-export default abstract class ItemEntity<TFields extends ItemFields> {
-  static readonly __typename: string = 'Item';
+export default abstract class ItemEntity<TFields extends ItemFields = ItemFields> {
+  protected readonly __typename: string = 'Item';
 
   constructor(private readonly fields: TFields) {}
 
@@ -48,9 +47,7 @@ export default abstract class ItemEntity<TFields extends ItemFields> {
     return this.fields['id'];
   }
 
-  getTypename<TFields extends ItemFields, TEntity extends ItemEntity<TFields>>(
-    this: IEntityClass<TFields, TEntity>
-  ): string {
+  getTypename(): string {
     return this.__typename;
   }
 }

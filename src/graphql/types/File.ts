@@ -12,6 +12,9 @@ export const fileTypeDef = gql`
     filename: String!
     title: String!
     description: String
+
+    relatedIn: [Item]!
+    relatesTo: [Item]!
   }
 `;
 

@@ -10,7 +10,7 @@ interface DocumentFields extends ItemFields {
 }
 
 export default class DocumentEntity extends ItemEntity<DocumentFields> {
-  static readonly __typename = 'Document';
+  protected readonly __typename = 'Document';
 
   static getEntityCompanion(): EntityCompanion<DocumentFields> {
     return {

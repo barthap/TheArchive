@@ -12,6 +12,9 @@ export const photoTypeDef = gql`
     filename: String!
     title: String!
     description: String
+
+    relatedIn: [Item]!
+    relatesTo: [Item]!
   }
 `;
 

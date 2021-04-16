@@ -197,22 +197,22 @@ select RV.*,
 from reference_view RV
          join Reference R on R.target_id = RV.Id;
 
-create or replace function reference_targets(source_id uuid)
+create or replace function reference_targets(source_item_id uuid)
     returns setof references_to
     language plpgsql
 as
 $$
 begin
-    return query select * from references_to where source_id = source_id;
+    return query select * from references_to where source_id = source_item_id;
 end;
 $$;
 
-create or replace function reference_sources(target_id uuid)
+create or replace function reference_sources(target_item_id uuid)
     returns setof references_to
     language plpgsql
 as
 $$
 begin
-    return query select * from referenced_in where target_id = target_id;
+    return query select * from referenced_in where target_id = target_item_id;
 end;
 $$
