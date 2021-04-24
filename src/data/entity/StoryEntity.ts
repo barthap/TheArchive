@@ -1,3 +1,4 @@
+import { AppContext } from '../../context';
 import { ID } from '../types';
 
 import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
@@ -22,11 +23,14 @@ export default class StoryEntity extends ItemEntity<StoryFields> {
     };
   }
 
-  static async byIdAsync(id: ID): Promise<StoryEntity | null> {
-    return await StoryEntity.repository().getById(id);
+  static async byIdAsync(
+    id: ID,
+    { context }: { context?: AppContext } = {}
+  ): Promise<StoryEntity | null> {
+    return await StoryEntity.repository(context).getById(id);
   }
 
-  static async getAllAsync(): Promise<StoryEntity[]> {
-    return await StoryEntity.repository().getAll();
+  static async getAllAsync({ context }: { context?: AppContext } = {}): Promise<StoryEntity[]> {
+    return await StoryEntity.repository(context).getAll();
   }
 }

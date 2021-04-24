@@ -1,5 +1,7 @@
 import { ApolloServer, gql } from 'apollo-server-koa';
 
+import { AppContext } from '../context';
+
 import { documentQueryResolvers, documentQueryTypeDefs } from './queries/DocumentQuery';
 import { fileQueryResolvers, fileQueryTypeDefs } from './queries/FileQuery';
 import { personQueryResolvers, personQueryTypeDefs } from './queries/PersonQuery';
@@ -62,6 +64,9 @@ export async function startApolloServer(): Promise<ApolloServer> {
   const server = new ApolloServer({
     typeDefs: [customScalarDefinitions, rootTypeDef, ...queryTypeDefs, ...typeDefs],
     resolvers: [customScalarResolvers, rootResolver, ...queryResolvers, ...typeResolvers],
+    context: (_request) => {
+      return new AppContext();
+    },
   });
   await server.start();
   return server;

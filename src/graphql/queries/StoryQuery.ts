@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-koa';
 
+import { AppContext } from '../../context';
 import StoryEntity from '../../data/entity/StoryEntity';
 
 export const storyQueryTypeDefs = gql`
@@ -15,12 +16,20 @@ export const storyQueryTypeDefs = gql`
 
 type Root = typeof undefined;
 
-const allStories = async (): Promise<StoryEntity[]> => {
-  return await StoryEntity.getAllAsync();
+const allStories = async (
+  _root: Root,
+  _params: any,
+  context: AppContext
+): Promise<StoryEntity[]> => {
+  return await StoryEntity.getAllAsync({ context });
 };
 
-const storyById = async (_root: Root, { id }: { id: string }): Promise<StoryEntity> => {
-  const story = await StoryEntity.byIdAsync(id);
+const storyById = async (
+  _root: Root,
+  { id }: { id: string },
+  context: AppContext
+): Promise<StoryEntity> => {
+  const story = await StoryEntity.byIdAsync(id, { context });
   if (!story) {
     throw new Error(`Story with id ${id} does not exist`);
   }

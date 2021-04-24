@@ -15,6 +15,8 @@ export const photoTypeDef = gql`
 
     relatedIn: [Item]!
     relatesTo: [Item]!
+
+    _referenceId: ID
   }
 `;
 

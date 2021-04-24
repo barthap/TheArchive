@@ -1,3 +1,4 @@
+import { AppContext } from '../../context';
 import client from '../../db/client';
 import DocumentEntity from '../entity/DocumentEntity';
 import FileEntity from '../entity/FileEntity';
@@ -19,6 +20,7 @@ interface RelationResultSet {
   rows: {
     id: string;
     type: TypeCode;
+    reference_id: string;
   }[];
 }
 
@@ -28,15 +30,20 @@ export class RelationRepository {
    * @param item item to find references to
    * @returns entities which reference provided `item`
    */
-  static async findItemsRelatedIn(item: ItemEntity): Promise<ItemEntity[]> {
+  static async findItemsRelatedIn(
+    item: ItemEntity,
+    { context }: { context?: AppContext } = {}
+  ): Promise<ItemEntity[]> {
+    // return await this.relatedInLoader.load(item.getId());
     const itemId = item.getId();
+    console.count('relatedIn');
 
     const result = await client.raw<RelationResultSet>(
-      'select id, type from reference_sources(?);',
+      'select id, type, reference_id from reference_sources(?);',
       itemId
     );
 
-    return await this.processResultSet(result);
+    return await RelationRepository.processResultSet(result, { context });
   }
 
   /**
@@ -44,43 +51,63 @@ export class RelationRepository {
    * @param item item to find references for
    * @returns entities which are referenced by provided `item`
    */
-  static async findItemsRelatesTo(item: ItemEntity): Promise<ItemEntity[]> {
+  static async findItemsRelatesTo(
+    item: ItemEntity,
+    { context }: { context?: AppContext } = {}
+  ): Promise<ItemEntity[]> {
+    console.count('relatesTo');
     const itemId = item.getId();
 
     const result = await client.raw<RelationResultSet>(
-      'select id, type from reference_targets(?);',
+      'select id, type, reference_id from reference_targets(?);',
       itemId
     );
 
-    return await this.processResultSet(result);
+    return await this.processResultSet(result, { context });
   }
 
-  private static async processResultSet(resultSet: RelationResultSet): Promise<ItemEntity[]> {
-    const groups = resultSet.rows.reduce((map, row) => {
-      const ids = map.get(row.type) ?? [];
-      map.set(row.type, [...ids, row.id]);
-      return map;
-    }, new Map<TypeCode, ID[]>());
+  private static async processResultSet(
+    resultSet: RelationResultSet,
+    { context }: { context?: AppContext } = {}
+  ): Promise<ItemEntity[]> {
+    const groups = new Map<TypeCode, ID[]>();
+    const referenceIds = new Map<ID, ID>();
+
+    // group ids by entity type
+    for (const row of resultSet.rows) {
+      const ids = groups.get(row.type) ?? [];
+      groups.set(row.type, [...ids, row.id]);
+
+      referenceIds.set(row.id, row.reference_id);
+    }
 
     const groupItems = await Promise.all(
-      Array.from(groups).map(([type, ids]) => this.processGroup(type, ids))
+      Array.from(groups).map(([type, ids]) => this.processGroup(type, ids, { context }))
     );
 
-    return groupItems.flat();
+    const items = groupItems.flat();
+    for (const item of items) {
+      item._referenceId = referenceIds.get(item.getId());
+    }
+    return items;
   }
 
-  private static async processGroup(type: TypeCode, ids: ID[]): Promise<ItemEntity[]> {
+  private static async processGroup(
+    type: TypeCode,
+    ids: ID[],
+    { context }: { context?: AppContext } = {}
+  ): Promise<ItemEntity[]> {
     switch (type) {
       case TypeCode.DOCUMENT:
-        return await DocumentEntity.repository().getMany(ids);
+        return await DocumentEntity.repository(context).getMany(ids);
       case TypeCode.FILE:
-        return await FileEntity.repository().getMany(ids);
+        return await FileEntity.repository(context).getMany(ids);
       case TypeCode.PERSON:
-        return await PersonEntity.repository().getMany(ids);
+        return await PersonEntity.repository(context).getMany(ids);
       case TypeCode.PHOTO:
-        return await PhotoEntity.repository().getMany(ids);
+        return await PhotoEntity.repository(context).getMany(ids);
       case TypeCode.STORY:
-        return await StoryEntity.repository().getMany(ids);
+        return await StoryEntity.repository(context).getMany(ids);
       default:
         throw new Error(`Unsupported entity type code: ${type}`);
     }

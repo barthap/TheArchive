@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-koa';
 
+import { AppContext } from '../../context';
 import DocumentEntity from '../../data/entity/DocumentEntity';
 
 export const documentQueryTypeDefs = gql`
@@ -15,12 +16,20 @@ export const documentQueryTypeDefs = gql`
 
 type Root = typeof undefined;
 
-const allDocuments = async (): Promise<DocumentEntity[]> => {
-  return await DocumentEntity.getAllAsync();
+const allDocuments = async (
+  _root: Root,
+  _params: any,
+  context: AppContext
+): Promise<DocumentEntity[]> => {
+  return await DocumentEntity.getAllAsync({ context });
 };
 
-const documentById = async (_root: Root, { id }: { id: string }): Promise<DocumentEntity> => {
-  const doc = await DocumentEntity.byIdAsync(id);
+const documentById = async (
+  _root: Root,
+  { id }: { id: string },
+  context: AppContext
+): Promise<DocumentEntity> => {
+  const doc = await DocumentEntity.byIdAsync(id, { context });
   if (!doc) {
     throw new Error(`Document with id ${id} does not exist`);
   }

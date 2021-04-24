@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "apollo-server-koa": "^2.22.2",
+    "dataloader": "^2.0.0",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.4",
     "knex": "^0.95.4",

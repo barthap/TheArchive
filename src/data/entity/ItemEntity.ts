@@ -1,3 +1,4 @@
+import { AppContext } from '../../context';
 import ItemRepository from '../repository/ItemRepository';
 import { ID } from '../types';
 
@@ -26,13 +27,20 @@ export interface IEntityClass<TFields extends ItemFields, TEntity extends ItemEn
 
 export default abstract class ItemEntity<TFields extends ItemFields = ItemFields> {
   protected readonly __typename: string = 'Item';
+  _referenceId: string | undefined;
 
   constructor(private readonly fields: TFields) {}
 
   static repository<TFields extends ItemFields, TEntity extends ItemEntity<TFields>>(
-    this: IEntityClass<TFields, TEntity>
+    this: IEntityClass<TFields, TEntity>,
+    context?: AppContext
   ): ItemRepository<TFields, TEntity> {
-    return new ItemRepository<TFields, TEntity>(this);
+    if (!context) {
+      console.warn(
+        'WARN: Context not provided for repository: ' + this.name + '. Queries will be inefficient'
+      );
+    }
+    return context?.getRepositoryForClass(this) ?? new ItemRepository<TFields, TEntity>(this);
   }
 
   getField<T extends keyof TFields>(field: T): TFields[T] {

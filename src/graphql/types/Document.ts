@@ -16,6 +16,8 @@ export const documentTypeDef = gql`
 
     relatedIn: [Item]!
     relatesTo: [Item]!
+
+    _referenceId: ID
   }
 `;
 

@@ -15,6 +15,8 @@ export const personTypeDef = gql`
 
     relatedIn: [Item]!
     relatesTo: [Item]!
+
+    _referenceId: ID
   }
 `;
 
