@@ -25,15 +25,14 @@ interface RelationResultSet {
 }
 
 export class RelationRepository {
+  constructor(private readonly context: AppContext) {}
+
   /**
    * Finds all entities in which the `item` is referenced
    * @param item item to find references to
    * @returns entities which reference provided `item`
    */
-  static async findItemsRelatedIn(
-    item: ItemEntity,
-    { context }: { context?: AppContext } = {}
-  ): Promise<ItemEntity[]> {
+  async findItemsRelatedIn(item: ItemEntity): Promise<ItemEntity[]> {
     // return await this.relatedInLoader.load(item.getId());
     const itemId = item.getId();
     console.count('relatedIn');
@@ -43,7 +42,7 @@ export class RelationRepository {
       itemId
     );
 
-    return await RelationRepository.processResultSet(result, { context });
+    return await this.processResultSet(result);
   }
 
   /**
@@ -51,10 +50,7 @@ export class RelationRepository {
    * @param item item to find references for
    * @returns entities which are referenced by provided `item`
    */
-  static async findItemsRelatesTo(
-    item: ItemEntity,
-    { context }: { context?: AppContext } = {}
-  ): Promise<ItemEntity[]> {
+  async findItemsRelatesTo(item: ItemEntity): Promise<ItemEntity[]> {
     console.count('relatesTo');
     const itemId = item.getId();
 
@@ -63,13 +59,10 @@ export class RelationRepository {
       itemId
     );
 
-    return await this.processResultSet(result, { context });
+    return await this.processResultSet(result);
   }
 
-  private static async processResultSet(
-    resultSet: RelationResultSet,
-    { context }: { context?: AppContext } = {}
-  ): Promise<ItemEntity[]> {
+  private async processResultSet(resultSet: RelationResultSet): Promise<ItemEntity[]> {
     const groups = new Map<TypeCode, ID[]>();
     const referenceIds = new Map<ID, ID>();
 
@@ -82,7 +75,7 @@ export class RelationRepository {
     }
 
     const groupItems = await Promise.all(
-      Array.from(groups).map(([type, ids]) => this.processGroup(type, ids, { context }))
+      Array.from(groups).map(([type, ids]) => this.processGroup(type, ids))
     );
 
     const items = groupItems.flat();
@@ -92,22 +85,18 @@ export class RelationRepository {
     return items;
   }
 
-  private static async processGroup(
-    type: TypeCode,
-    ids: ID[],
-    { context }: { context?: AppContext } = {}
-  ): Promise<ItemEntity[]> {
+  private async processGroup(type: TypeCode, ids: ID[]): Promise<ItemEntity[]> {
     switch (type) {
       case TypeCode.DOCUMENT:
-        return await DocumentEntity.repository(context).getMany(ids);
+        return await DocumentEntity.repository(this.context).getMany(ids);
       case TypeCode.FILE:
-        return await FileEntity.repository(context).getMany(ids);
+        return await FileEntity.repository(this.context).getMany(ids);
       case TypeCode.PERSON:
-        return await PersonEntity.repository(context).getMany(ids);
+        return await PersonEntity.repository(this.context).getMany(ids);
       case TypeCode.PHOTO:
-        return await PhotoEntity.repository(context).getMany(ids);
+        return await PhotoEntity.repository(this.context).getMany(ids);
       case TypeCode.STORY:
-        return await StoryEntity.repository(context).getMany(ids);
+        return await StoryEntity.repository(this.context).getMany(ids);
       default:
         throw new Error(`Unsupported entity type code: ${type}`);
     }

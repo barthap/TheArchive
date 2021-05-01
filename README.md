@@ -15,9 +15,6 @@ Other name ideas:
 - [ ] Implement DataLoader
   - [x] For entities
   - [ ] For references
-- [ ] Remove duplicates
-  - [ ] From queries (maybe)
-  - [ ] From entities (byId, all)
 - [ ] Structure App Context
   - [ ] Move current context to data
   - [ ] Make ability to choose global/per-request
