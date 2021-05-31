@@ -1,4 +1,6 @@
-import { AppContext } from '../../context';
+import DataLoader from 'dataloader';
+
+import { DataContext } from '../context';
 import client from '../../db/client';
 import DocumentEntity from '../entity/DocumentEntity';
 import FileEntity from '../entity/FileEntity';
@@ -25,7 +27,36 @@ interface RelationResultSet {
 }
 
 export class RelationRepository {
-  constructor(private readonly context: AppContext) {}
+  constructor(private readonly context: DataContext) {}
+
+  private readonly relatedInLoader = new DataLoader<ID, ItemEntity[]>(async (ids) => {
+    console.count('relatedIn');
+    return await Promise.all(
+      ids.map(async (itemId) => {
+        const result = await client.raw<RelationResultSet>(
+          'select id, type, reference_id from reference_sources(?);',
+          itemId
+        );
+
+        return await this.processResultSet(result);
+      })
+    );
+  });
+
+  private readonly relatesToLoader = new DataLoader<ID, ItemEntity[]>(async (ids) => {
+    return await Promise.all(
+      ids.map(async (itemId) => {
+        console.count('relatesTo');
+
+        const result = await client.raw<RelationResultSet>(
+          'select id, type, reference_id from reference_targets(?);',
+          itemId
+        );
+
+        return await this.processResultSet(result);
+      })
+    );
+  });
 
   /**
    * Finds all entities in which the `item` is referenced
@@ -33,16 +64,7 @@ export class RelationRepository {
    * @returns entities which reference provided `item`
    */
   async findItemsRelatedIn(item: ItemEntity): Promise<ItemEntity[]> {
-    // return await this.relatedInLoader.load(item.getId());
-    const itemId = item.getId();
-    console.count('relatedIn');
-
-    const result = await client.raw<RelationResultSet>(
-      'select id, type, reference_id from reference_sources(?);',
-      itemId
-    );
-
-    return await this.processResultSet(result);
+    return await this.relatedInLoader.load(item.getId());
   }
 
   /**
@@ -51,15 +73,7 @@ export class RelationRepository {
    * @returns entities which are referenced by provided `item`
    */
   async findItemsRelatesTo(item: ItemEntity): Promise<ItemEntity[]> {
-    console.count('relatesTo');
-    const itemId = item.getId();
-
-    const result = await client.raw<RelationResultSet>(
-      'select id, type, reference_id from reference_targets(?);',
-      itemId
-    );
-
-    return await this.processResultSet(result);
+    return await this.relatesToLoader.load(item.getId());
   }
 
   private async processResultSet(resultSet: RelationResultSet): Promise<ItemEntity[]> {

@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-koa';
 
-import { AppContext } from '../../context';
 import FileEntity from '../../data/entity/FileEntity';
+import { GraphQLContext } from '../main';
 
 export const fileQueryTypeDefs = gql`
   type FileQuery {
@@ -16,14 +16,18 @@ export const fileQueryTypeDefs = gql`
 
 type Root = typeof undefined;
 
-const allFiles = async (_root: Root, _params: any, context: AppContext): Promise<FileEntity[]> => {
+const allFiles = async (
+  _root: Root,
+  _params: any,
+  { data: context }: GraphQLContext
+): Promise<FileEntity[]> => {
   return await FileEntity.getAllAsync({ context });
 };
 
 const fileById = async (
   _root: Root,
   { id }: { id: string },
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<FileEntity> => {
   const file = await FileEntity.byIdAsync(id, { context });
   if (!file) {

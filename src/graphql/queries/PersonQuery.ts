@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-koa';
 
-import { AppContext } from '../../context';
 import PersonEntity from '../../data/entity/PersonEntity';
+import { GraphQLContext } from '../main';
 
 export const personQueryTypeDefs = gql`
   type PersonQuery {
@@ -19,7 +19,7 @@ type Root = typeof undefined;
 const allPeople = async (
   _root: Root,
   _params: any,
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<PersonEntity[]> => {
   return await PersonEntity.getAllAsync({ context });
 };
@@ -27,7 +27,7 @@ const allPeople = async (
 const personById = async (
   _root: Root,
   { id }: { id: string },
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<PersonEntity> => {
   const person = await PersonEntity.byIdAsync(id, { context });
   if (!person) {

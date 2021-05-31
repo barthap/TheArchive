@@ -1,4 +1,4 @@
-import { AppContext } from '../../context';
+import { DataContext } from '../context';
 import ItemRepository from '../repository/ItemRepository';
 import { ID } from '../types';
 
@@ -33,7 +33,7 @@ export default abstract class ItemEntity<TFields extends ItemFields = ItemFields
 
   static repository<TFields extends ItemFields, TEntity extends ItemEntity<TFields>>(
     this: IEntityClass<TFields, TEntity>,
-    context?: AppContext
+    context?: DataContext
   ): ItemRepository<TFields, TEntity> {
     if (!context) {
       console.warn(

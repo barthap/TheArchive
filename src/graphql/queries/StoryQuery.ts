@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-koa';
 
-import { AppContext } from '../../context';
 import StoryEntity from '../../data/entity/StoryEntity';
+import { GraphQLContext } from '../main';
 
 export const storyQueryTypeDefs = gql`
   type StoryQuery {
@@ -19,7 +19,7 @@ type Root = typeof undefined;
 const allStories = async (
   _root: Root,
   _params: any,
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<StoryEntity[]> => {
   return await StoryEntity.getAllAsync({ context });
 };
@@ -27,7 +27,7 @@ const allStories = async (
 const storyById = async (
   _root: Root,
   { id }: { id: string },
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<StoryEntity> => {
   const story = await StoryEntity.byIdAsync(id, { context });
   if (!story) {

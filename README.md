@@ -14,11 +14,11 @@ Other name ideas:
 
 - [ ] Implement DataLoader
   - [x] For entities
-  - [ ] For references
+  - [ ] For references (make group queryies)
 - [ ] Structure App Context
-  - [ ] Move current context to data
+  - [x] Move current context to data
   - [ ] Make ability to choose global/per-request
-  - [ ] Add koa request context
+  - [x] Add koa request context
 - [ ] Automatic data migrations
   - [ ] File upload and storage
 - [ ] Integration tests

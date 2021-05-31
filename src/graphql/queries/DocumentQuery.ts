@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-koa';
 
-import { AppContext } from '../../context';
 import DocumentEntity from '../../data/entity/DocumentEntity';
+import { GraphQLContext } from '../main';
 
 export const documentQueryTypeDefs = gql`
   type DocumentQuery {
@@ -19,7 +19,7 @@ type Root = typeof undefined;
 const allDocuments = async (
   _root: Root,
   _params: any,
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<DocumentEntity[]> => {
   return await DocumentEntity.getAllAsync({ context });
 };
@@ -27,7 +27,7 @@ const allDocuments = async (
 const documentById = async (
   _root: Root,
   { id }: { id: string },
-  context: AppContext
+  { data: context }: GraphQLContext
 ): Promise<DocumentEntity> => {
   const doc = await DocumentEntity.byIdAsync(id, { context });
   if (!doc) {

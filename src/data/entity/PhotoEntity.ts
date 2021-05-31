@@ -1,4 +1,4 @@
-import { AppContext } from '../../context';
+import { DataContext } from '../context';
 import { ID } from '../types';
 
 import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
@@ -23,12 +23,12 @@ export default class PhotoEntity extends ItemEntity<PhotoFields> {
 
   static async byIdAsync(
     id: ID,
-    { context }: { context?: AppContext } = {}
+    { context }: { context?: DataContext } = {}
   ): Promise<PhotoEntity | null> {
     return await PhotoEntity.repository(context).getById(id);
   }
 
-  static async getAllAsync({ context }: { context?: AppContext } = {}): Promise<PhotoEntity[]> {
+  static async getAllAsync({ context }: { context?: DataContext } = {}): Promise<PhotoEntity[]> {
     return await PhotoEntity.repository(context).getAll();
   }
 }

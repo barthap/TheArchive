@@ -1,8 +1,8 @@
-import ItemRepository from './data/repository/ItemRepository';
-import ItemEntity, { IEntityClass, ItemFields } from './data/entity/ItemEntity';
-import { RelationRepository } from './data/repository/RelationRepository';
+import ItemRepository from './repository/ItemRepository';
+import ItemEntity, { IEntityClass, ItemFields } from './entity/ItemEntity';
+import { RelationRepository } from './repository/RelationRepository';
 
-export class AppContext {
+export class DataContext {
   private readonly entityRepositories: Map<string, ItemRepository<any, any>>;
   private readonly relationshipRepository = new RelationRepository(this);
 

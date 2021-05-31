@@ -1,6 +1,7 @@
 import { ApolloServer, gql } from 'apollo-server-koa';
 
-import { AppContext } from '../context';
+import { KoaAppContext } from '../app';
+import { DataContext } from '../data/context';
 
 import { documentQueryResolvers, documentQueryTypeDefs } from './queries/DocumentQuery';
 import { fileQueryResolvers, fileQueryTypeDefs } from './queries/FileQuery';
@@ -64,10 +65,16 @@ export async function startApolloServer(): Promise<ApolloServer> {
   const server = new ApolloServer({
     typeDefs: [customScalarDefinitions, rootTypeDef, ...queryTypeDefs, ...typeDefs],
     resolvers: [customScalarResolvers, rootResolver, ...queryResolvers, ...typeResolvers],
-    context: (_request) => {
-      return new AppContext();
-    },
+    context: ({ ctx }: { ctx: KoaAppContext }) => ({
+      koa: ctx,
+      data: ctx.state.dataManager,
+    }),
   });
   await server.start();
   return server;
+}
+
+export interface GraphQLContext {
+  koa: KoaAppContext;
+  data: DataContext;
 }

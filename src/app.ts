@@ -4,19 +4,33 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 
 import router from './api/routers/main';
+import { DataContext } from './data/context';
 import { startApolloServer } from './graphql/main';
 
-type State = object;
-type Context = object;
+type AppState = {
+  dataManager: DataContext;
+};
 
-type KoaApplication = Koa<State, Context>;
+type CustomContext = object;
+
+type KoaApplication = Koa<AppState, CustomContext>;
+export type KoaAppContext = Koa.ParameterizedContext<AppState, CustomContext>;
+
+const dataMiddleware: Koa.Middleware<AppState, CustomContext> = async (
+  ctx,
+  next
+): Promise<void> => {
+  console.log('creating data context...');
+
+  ctx.state.dataManager = new DataContext();
+  await next();
+};
 
 function createApp(): KoaApplication {
-  const app = new Koa<State, Context>() as KoaApplication;
+  const app = new Koa<AppState, CustomContext>() as KoaApplication;
 
-  // app.use(sentry.getMiddleware());
-  // app.use(koaUtils.errorMiddleware);
   app.use(koaBody());
+  app.use(dataMiddleware);
   app.use(router.routes());
   app.use(router.allowedMethods());
 
@@ -27,7 +41,7 @@ export default async function initAsync(): Promise<Server> {
   const app = createApp();
 
   const apolloServer = await startApolloServer();
-  apolloServer.applyMiddleware({ app });
+  app.use(apolloServer.getMiddleware());
 
   const httpServer = http.createServer(app.callback());
   return httpServer;
