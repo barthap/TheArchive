@@ -3,7 +3,7 @@ import env from './utils/env';
 const config = {
   port: env('PORT', { defaultValue: 3009, transform: Number }),
   logger: {
-    name: env('LOGGER_NAME', { defaultValue: 'submission-service' }),
+    name: env('LOGGER_NAME', { defaultValue: 'archive-app' }),
     //    level: env('LOGGER_LEVEL', { defaultValue: LoggerLevel.INFO, oneOf: LoggerLevel }),
   },
 
