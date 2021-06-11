@@ -3,9 +3,11 @@ import { gql } from 'apollo-server-koa';
 import FileEntity from '../../data/entity/FileEntity';
 import { GraphQLContext } from '../main';
 
+import { ItemQueryParams } from './common';
+
 export const fileQueryTypeDefs = gql`
   type FileQuery {
-    all: [File]!
+    all(limit: Int, offset: Int): [File]!
     byId(id: ID!): File
   }
 
@@ -18,10 +20,10 @@ type Root = typeof undefined;
 
 const allFiles = async (
   _root: Root,
-  _params: any,
+  params: ItemQueryParams,
   { data: context }: GraphQLContext
 ): Promise<FileEntity[]> => {
-  return await FileEntity.getAllAsync({ context });
+  return await FileEntity.getAllAsync({ context, ...params });
 };
 
 const fileById = async (

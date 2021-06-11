@@ -9,6 +9,10 @@ import ItemEntity, {
 } from '../entity/ItemEntity';
 import { ID } from '../types';
 
+export interface ItemFilters {
+  limit?: number;
+  offset?: number;
+}
 export default class ItemRepository<
   TFields extends ItemFields,
   TEntity extends ItemEntity<TFields>
@@ -38,9 +42,12 @@ export default class ItemRepository<
     return new this.entityClass(this.mapRowToFields(record)); */
   }
 
-  async getAll(): Promise<TEntity[]> {
+  async getAll({ limit = 10, offset = 0 }: ItemFilters = {}): Promise<TEntity[]> {
     console.count('entity ' + this.entityCompanion.tableName + ' getAll');
-    const results = await client(this.entityCompanion.viewName).select();
+    const results = await client(this.entityCompanion.viewName)
+      .select()
+      .limit(limit)
+      .offset(offset);
     const entities = results.map((r) => new this.entityClass(this.mapRowToFields(r)));
     entities.forEach((e) => this.loader.prime(e.getId(), e));
     return entities;

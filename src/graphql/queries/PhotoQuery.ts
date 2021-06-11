@@ -3,9 +3,11 @@ import { gql } from 'apollo-server-koa';
 import PhotoEntity from '../../data/entity/PhotoEntity';
 import { GraphQLContext } from '../main';
 
+import { ItemQueryParams } from './common';
+
 export const photoQueryTypeDefs = gql`
   type PhotoQuery {
-    all: [Photo]!
+    all(limit: Int, offset: Int): [Photo]!
     byId(id: ID!): Photo
   }
 
@@ -18,10 +20,10 @@ type Root = typeof undefined;
 
 const allPhotos = async (
   _root: Root,
-  _params: any,
+  params: ItemQueryParams,
   { data: context }: GraphQLContext
 ): Promise<PhotoEntity[]> => {
-  return await PhotoEntity.getAllAsync({ context });
+  return await PhotoEntity.getAllAsync({ context, ...params });
 };
 
 const photoById = async (

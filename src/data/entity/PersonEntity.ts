@@ -1,4 +1,5 @@
 import { DataContext } from '../context';
+import { ItemFilters } from '../repository/ItemRepository';
 import { ID } from '../types';
 
 import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
@@ -31,7 +32,10 @@ export default class PersonEntity extends ItemEntity<PersonFields> {
     return await PersonEntity.repository(context).getById(id);
   }
 
-  static async getAllAsync({ context }: { context?: DataContext } = {}): Promise<PersonEntity[]> {
-    return await PersonEntity.repository(context).getAll();
+  static async getAllAsync({
+    context,
+    ...filters
+  }: ItemFilters & { context?: DataContext } = {}): Promise<PersonEntity[]> {
+    return await PersonEntity.repository(context).getAll(filters);
   }
 }

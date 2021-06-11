@@ -3,9 +3,11 @@ import { gql } from 'apollo-server-koa';
 import PersonEntity from '../../data/entity/PersonEntity';
 import { GraphQLContext } from '../main';
 
+import { ItemQueryParams } from './common';
+
 export const personQueryTypeDefs = gql`
   type PersonQuery {
-    all: [Person]!
+    all(limit: Int, offset: Int): [Person]!
     byId(id: ID!): Person
   }
 
@@ -18,10 +20,10 @@ type Root = typeof undefined;
 
 const allPeople = async (
   _root: Root,
-  _params: any,
+  params: ItemQueryParams,
   { data: context }: GraphQLContext
 ): Promise<PersonEntity[]> => {
-  return await PersonEntity.getAllAsync({ context });
+  return await PersonEntity.getAllAsync({ context, ...params });
 };
 
 const personById = async (

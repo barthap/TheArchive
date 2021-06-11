@@ -3,9 +3,11 @@ import { gql } from 'apollo-server-koa';
 import DocumentEntity from '../../data/entity/DocumentEntity';
 import { GraphQLContext } from '../main';
 
+import { ItemQueryParams } from './common';
+
 export const documentQueryTypeDefs = gql`
   type DocumentQuery {
-    all: [Document]!
+    all(limit: Int, offset: Int): [Document]!
     byId(id: ID!): Document
   }
 
@@ -18,10 +20,10 @@ type Root = typeof undefined;
 
 const allDocuments = async (
   _root: Root,
-  _params: any,
+  params: ItemQueryParams,
   { data: context }: GraphQLContext
 ): Promise<DocumentEntity[]> => {
-  return await DocumentEntity.getAllAsync({ context });
+  return await DocumentEntity.getAllAsync({ context, ...params });
 };
 
 const documentById = async (
