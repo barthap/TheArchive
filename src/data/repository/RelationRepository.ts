@@ -1,4 +1,5 @@
 import DataLoader from 'dataloader';
+import { Knex } from 'knex';
 
 import { DataContext } from '../context';
 import client from '../../db/client';
@@ -16,6 +17,12 @@ interface RelationResultSet {
     type: TypeCode;
     reference_id: string;
   }[];
+}
+
+export interface SingleRelation {
+  relationId: string;
+  source: ItemEntity;
+  target: ItemEntity;
 }
 
 export class RelationRepository {
@@ -68,6 +75,49 @@ export class RelationRepository {
     return await this.relatesToLoader.load(item.getId());
   }
 
+  async createRelation(sourceId: ID, targetId: ID): Promise<SingleRelation> {
+    if (sourceId === targetId) {
+      throw new Error('Cannot create relation. Item cannot relate itself!');
+    }
+
+    const payload = {
+      source_id: sourceId,
+      target_id: targetId,
+    };
+
+    return await client.transaction(async (tx) => {
+      const sourceItem = await this.findItem(sourceId, tx);
+      const targetItem = await this.findItem(targetId, tx);
+
+      if (!sourceItem) throw new Error("Cannot create relation. Source item doesn't exist.");
+      if (!targetItem) throw new Error("Cannot create relation. Target item doesn't exist.");
+
+      const rows = await tx.insert(payload, '*').into('reference');
+      if (rows.length !== 1)
+        throw new Error(`Cannot create relationship. Affected rows: ${rows.length}`);
+
+      return {
+        relationId: rows[0].reference_id,
+        source: sourceItem,
+        target: targetItem,
+      };
+    });
+  }
+
+  async deleteRelation(relationId: ID): Promise<SingleRelation> {
+    return await client.transaction(async (tx) => {
+      const rows = await tx('reference').where('reference_id', relationId).delete('*');
+      if (rows.length !== 1)
+        throw new Error(`Failed to delete relation. Affected rows: ${rows.length}`);
+
+      return {
+        relationId: rows[0].reference_id,
+        source: (await this.findItem(rows[0].source_id, tx))!,
+        target: (await this.findItem(rows[0].target_id, tx))!,
+      };
+    });
+  }
+
   private async processResultSet(resultSet: RelationResultSet): Promise<ItemEntity[]> {
     const groups = new Map<TypeCode, ID[]>();
     const referenceIds = new Map<ID, ID>();
@@ -106,5 +156,13 @@ export class RelationRepository {
       default:
         throw new Error(`Unsupported entity type code: ${type}`);
     }
+  }
+
+  private async findItem(itemId: ID, db: Knex = client): Promise<ItemEntity | null> {
+    const item = await db.select(['type_code']).from('items').where('item_id', itemId).first();
+    if (!item) return null;
+
+    const entities = await this.processGroup(item.type_code, [itemId]);
+    return entities[0] ?? null;
   }
 }

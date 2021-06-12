@@ -4,6 +4,7 @@ import { KoaAppContext } from '../app';
 import { DataContext } from '../data/context';
 
 import { personMutationResolvers, personMutationTypeDefs } from './mutations/PersonMutation';
+import { relationMutationResolvers, relationMutationTypeDefs } from './mutations/RelationMutation';
 import { documentQueryResolvers, documentQueryTypeDefs } from './queries/DocumentQuery';
 import { fileQueryResolvers, fileQueryTypeDefs } from './queries/FileQuery';
 import { personQueryResolvers, personQueryTypeDefs } from './queries/PersonQuery';
@@ -15,6 +16,7 @@ import { fileTypeDef, fileTypeResolver } from './types/File';
 import { itemTypeResolver, itemTypeDef } from './types/Item';
 import { personTypeDef, personTypeResolver } from './types/Person';
 import { photoTypeDef, photoTypeResolver } from './types/Photo';
+import { relationTypeDef, relationTypeResolver } from './types/Relation';
 import { storyTypeDef, storyTypeResolver } from './types/Story';
 
 // Construct a schema, using GraphQL schema language
@@ -52,8 +54,8 @@ const queryResolvers = [
   photoQueryResolvers,
   storyQueryResolvers,
 ];
-const mutationTypeDefs = [personMutationTypeDefs];
-const mutationResolvers = [personMutationResolvers];
+const mutationTypeDefs = [personMutationTypeDefs, relationMutationTypeDefs];
+const mutationResolvers = [personMutationResolvers, relationMutationResolvers];
 const typeDefs = [
   documentTypeDef,
   fileTypeDef,
@@ -61,6 +63,7 @@ const typeDefs = [
   personTypeDef,
   photoTypeDef,
   storyTypeDef,
+  relationTypeDef,
 ];
 const typeResolvers = [
   documentTypeResolver,
@@ -69,6 +72,7 @@ const typeResolvers = [
   personTypeResolver,
   photoTypeResolver,
   storyTypeResolver,
+  relationTypeResolver,
 ];
 
 export async function startApolloServer(): Promise<ApolloServer> {

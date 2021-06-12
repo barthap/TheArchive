@@ -9,9 +9,9 @@ export enum TypeCode {
 }
 
 export const entityTypeMapping: Record<string, TypeCode> = {
-  StoryEntity: TypeCode.STORY,
-  FileEntity: TypeCode.FILE,
-  DocumentEntity: TypeCode.DOCUMENT,
-  PersonEntity: TypeCode.PERSON,
-  PhotoEntity: TypeCode.PHOTO,
+  Story: TypeCode.STORY,
+  File: TypeCode.FILE,
+  Document: TypeCode.DOCUMENT,
+  Person: TypeCode.PERSON,
+  Photo: TypeCode.PHOTO,
 };

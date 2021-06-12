@@ -101,7 +101,7 @@ export default class ItemRepository<
 
       // 2. delete row in `items` table
       // ON DELETE CASCADE will take care of removing row from relations and entity-specific tables
-      await tx('items').where('item_id', itemId).del();
+      await tx('items').where('item_id', itemId).delete();
 
       return new this.entityClass(this.mapRowToFields(entityRows));
     });
