@@ -8,15 +8,7 @@ import ItemEntity from '../entity/ItemEntity';
 import PersonEntity from '../entity/PersonEntity';
 import PhotoEntity from '../entity/PhotoEntity';
 import StoryEntity from '../entity/StoryEntity';
-import { ID } from '../types';
-
-enum TypeCode {
-  STORY = 'S',
-  FILE = 'F',
-  DOCUMENT = 'D',
-  PERSON = 'P',
-  PHOTO = 'I',
-}
+import { ID, TypeCode } from '../types';
 
 interface RelationResultSet {
   rows: {

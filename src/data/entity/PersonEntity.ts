@@ -1,17 +1,18 @@
 import { DataContext } from '../context';
 import { ItemFilters } from '../repository/ItemRepository';
-import { ID } from '../types';
+import { ID, TypeCode } from '../types';
 
-import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
+import ItemEntity, { EntityCompanion, ItemFields, NewFields } from './ItemEntity';
 
 interface PersonFields extends ItemFields {
   fullName: string;
-  birthDate?: string;
+  birthDate?: Date;
   description?: string;
 }
 
 export default class PersonEntity extends ItemEntity<PersonFields> {
   protected readonly __typename = 'Person';
+  static readonly typeCode = TypeCode.PERSON;
 
   static getEntityCompanion(): EntityCompanion<PersonFields> {
     return {
@@ -37,5 +38,25 @@ export default class PersonEntity extends ItemEntity<PersonFields> {
     ...filters
   }: ItemFilters & { context?: DataContext } = {}): Promise<PersonEntity[]> {
     return await PersonEntity.repository(context).getAll(filters);
+  }
+
+  static async createPerson({
+    context,
+    fields,
+  }: {
+    context?: DataContext;
+    fields: NewFields<PersonFields>;
+  }): Promise<PersonEntity> {
+    return await PersonEntity.repository(context).create(fields);
+  }
+
+  static async deletePerson({
+    context,
+    personId,
+  }: {
+    context?: DataContext;
+    personId: ID;
+  }): Promise<PersonEntity> {
+    return await PersonEntity.repository(context).delete(personId);
   }
 }

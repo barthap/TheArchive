@@ -1,6 +1,6 @@
 import { DataContext } from '../context';
 import { ItemFilters } from '../repository/ItemRepository';
-import { ID } from '../types';
+import { ID, TypeCode } from '../types';
 
 import ItemEntity, { EntityCompanion, ItemFields } from './ItemEntity';
 
@@ -12,6 +12,7 @@ interface StoryFields extends ItemFields {
 
 export default class StoryEntity extends ItemEntity<StoryFields> {
   protected readonly __typename = 'Story';
+  static readonly typeCode = TypeCode.STORY;
 
   static getEntityCompanion(): EntityCompanion<StoryFields> {
     return {

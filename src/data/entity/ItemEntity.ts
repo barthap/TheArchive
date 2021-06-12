@@ -1,12 +1,14 @@
 import { DataContext } from '../context';
 import ItemRepository from '../repository/ItemRepository';
-import { ID } from '../types';
+import { ID, TypeCode } from '../types';
 
 export interface ItemFields {
   id: ID;
   createdAt?: string;
   updatedAt?: string;
 }
+
+export type NewFields<T extends ItemFields> = Omit<T, keyof ItemFields>;
 
 export const itemDefaultRowMap: Record<string, keyof ItemFields> = {
   created_at: 'createdAt',
@@ -23,6 +25,7 @@ export type EntityCompanion<TFields> = {
 export interface IEntityClass<TFields extends ItemFields, TEntity extends ItemEntity<TFields>> {
   new (fields: Readonly<TFields>): TEntity;
   getEntityCompanion(): EntityCompanion<TFields>;
+  typeCode: TypeCode;
 }
 
 export default abstract class ItemEntity<TFields extends ItemFields = ItemFields> {

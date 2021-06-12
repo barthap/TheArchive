@@ -3,6 +3,7 @@ import { ApolloServer, gql } from 'apollo-server-koa';
 import { KoaAppContext } from '../app';
 import { DataContext } from '../data/context';
 
+import { personMutationResolvers, personMutationTypeDefs } from './mutations/PersonMutation';
 import { documentQueryResolvers, documentQueryTypeDefs } from './queries/DocumentQuery';
 import { fileQueryResolvers, fileQueryTypeDefs } from './queries/FileQuery';
 import { personQueryResolvers, personQueryTypeDefs } from './queries/PersonQuery';
@@ -19,14 +20,21 @@ import { storyTypeDef, storyTypeResolver } from './types/Story';
 // Construct a schema, using GraphQL schema language
 const rootTypeDef = gql`
   type Query {
-    hello: String
+    _unused: String @deprecated(reason: "do not use")
+  }
+
+  type Mutation {
+    _unused: String @deprecated(reason: "do not use")
   }
 `;
 
 // Provide resolver functions for your schema fields
 const rootResolver = {
   Query: {
-    hello: () => 'Hello world!',
+    _unused: () => 'Hello world!',
+  },
+  Mutation: {
+    _unused: () => 'Hello World',
   },
 };
 
@@ -44,6 +52,8 @@ const queryResolvers = [
   photoQueryResolvers,
   storyQueryResolvers,
 ];
+const mutationTypeDefs = [personMutationTypeDefs];
+const mutationResolvers = [personMutationResolvers];
 const typeDefs = [
   documentTypeDef,
   fileTypeDef,
@@ -63,8 +73,20 @@ const typeResolvers = [
 
 export async function startApolloServer(): Promise<ApolloServer> {
   const server = new ApolloServer({
-    typeDefs: [customScalarDefinitions, rootTypeDef, ...queryTypeDefs, ...typeDefs],
-    resolvers: [customScalarResolvers, rootResolver, ...queryResolvers, ...typeResolvers],
+    typeDefs: [
+      customScalarDefinitions,
+      rootTypeDef,
+      ...queryTypeDefs,
+      ...mutationTypeDefs,
+      ...typeDefs,
+    ],
+    resolvers: [
+      customScalarResolvers,
+      rootResolver,
+      ...queryResolvers,
+      ...mutationResolvers,
+      ...typeResolvers,
+    ],
     context: ({ ctx }: { ctx: KoaAppContext }) => ({
       koa: ctx,
       data: ctx.state.dataManager,
