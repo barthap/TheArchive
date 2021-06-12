@@ -9,6 +9,7 @@ import { documentQueryResolvers, documentQueryTypeDefs } from './queries/Documen
 import { fileQueryResolvers, fileQueryTypeDefs } from './queries/FileQuery';
 import { personQueryResolvers, personQueryTypeDefs } from './queries/PersonQuery';
 import { photoQueryResolvers, photoQueryTypeDefs } from './queries/PhotoQuery';
+import { relationQueryResolvers, relationQueryTypeDefs } from './queries/RelationQuery';
 import { storyQueryResolvers, storyQueryTypeDefs } from './queries/StoryQuery';
 import { customScalarDefinitions, customScalarResolvers } from './scalars';
 import { documentTypeDef, documentTypeResolver } from './types/Document';
@@ -46,6 +47,7 @@ const queryTypeDefs = [
   personQueryTypeDefs,
   photoQueryTypeDefs,
   storyQueryTypeDefs,
+  relationQueryTypeDefs,
 ];
 const queryResolvers = [
   documentQueryResolvers,
@@ -53,6 +55,7 @@ const queryResolvers = [
   personQueryResolvers,
   photoQueryResolvers,
   storyQueryResolvers,
+  relationQueryResolvers,
 ];
 const mutationTypeDefs = [personMutationTypeDefs, relationMutationTypeDefs];
 const mutationResolvers = [personMutationResolvers, relationMutationResolvers];

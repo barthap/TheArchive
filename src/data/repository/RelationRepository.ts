@@ -75,6 +75,24 @@ export class RelationRepository {
     return await this.relatesToLoader.load(item.getId());
   }
 
+  async relationById(relationId: ID): Promise<SingleRelation> {
+    const row = await client
+      .select('*')
+      .from('reference')
+      .where('reference_id', relationId)
+      .first();
+
+    if (!row) {
+      throw new Error(`Relation with id=${relationId} doesn\'t exist!`);
+    }
+
+    return {
+      relationId: row.reference_id,
+      source: (await this.findItem(row.source_id))!,
+      target: (await this.findItem(row.target_id))!,
+    };
+  }
+
   async createRelation(sourceId: ID, targetId: ID): Promise<SingleRelation> {
     if (sourceId === targetId) {
       throw new Error('Cannot create relation. Item cannot relate itself!');
