@@ -12,6 +12,10 @@ export const itemTypeDef = gql`
     relatedIn: [Item]!
     relatesTo: [Item]!
 
+    """
+    Available only inside \`relatedIn\` and \`relatesTo\` queries.
+    Null otherwise.
+    """
     _referenceId: ID
   }
 `;

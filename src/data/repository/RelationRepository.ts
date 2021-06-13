@@ -83,7 +83,7 @@ export class RelationRepository {
       .first();
 
     if (!row) {
-      throw new Error(`Relation with id=${relationId} doesn\'t exist!`);
+      throw new Error(`Relation with id=${relationId} doesn't exist!`);
     }
 
     return {
