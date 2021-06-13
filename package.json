@@ -15,7 +15,8 @@
     "test:unit": "jest --config jest.config.unit.js",
     "test:unit:watch": "jest --config jest.config.unit.js --watch",
     "test:integration": "jest --runInBand --config jest.config.integration.js",
-    "test:integration:watch": "jest --runInBand --config jest.config.integration.js --watchAll"
+    "test:integration:watch": "jest --runInBand --config jest.config.integration.js --watchAll",
+    "migrate": "direnv exec .direnv/local ts-node db/migrate.ts"
   },
   "dependencies": {
     "apollo-server-koa": "^2.22.2",
@@ -33,6 +34,7 @@
     "@types/koa": "^2.13.1",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^14.14.37",
+    "@types/umzug": "^2.3.0",
     "bunyan": "^1.8.15",
     "eslint": "^7.23.0",
     "eslint-config-universe": "^7.0.1",
@@ -43,6 +45,7 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "umzug": "^2.3.0"
   }
 }
